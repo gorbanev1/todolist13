@@ -1,4 +1,5 @@
-import { createAction, createReducer, nanoid } from "@reduxjs/toolkit"
+import { createAction, createReducer, createSlice, nanoid } from "@reduxjs/toolkit"
+import { create } from "@mui/material/styles/createTransitions"
 
 export const deleteTodolistAC = createAction<{ id: string }>("todolists/deleteTodolist")
 export const createTodolistAC = createAction("todolists/createTodolist", (title: string) => {
@@ -11,7 +12,17 @@ export const changeTodolistFilterAC = createAction<{ id: string; filter: FilterV
 
 const initialState: Todolist[] = []
 
-export const todolistsReducer = createReducer(initialState, (builder) => {
+
+export const todolistsSlice = createSlice({
+  name: "todolists",
+  initialState: [] as Todolist[],
+  reducers: create =>({}),
+
+})
+export const {}=todolistsSlice.actions
+export const todolistReducer = todolistsSlice.reducer
+
+/*export const todolistsSlice = createReducer(initialState, (builder) => {
   builder
     .addCase(deleteTodolistAC, (state, action) => {
       const index = state.findIndex((todolist) => todolist.id === action.payload.id)
@@ -34,7 +45,7 @@ export const todolistsReducer = createReducer(initialState, (builder) => {
         todolist.filter = action.payload.filter
       }
     })
-})
+})*/
 
 export type Todolist = {
   id: string

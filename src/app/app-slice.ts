@@ -1,5 +1,5 @@
 import { createAction, createReducer, createSlice } from "@reduxjs/toolkit"
-
+export type ThemeMode = 'light' | 'dark'
 
 export const appSlice = createSlice({
   name: "app",
