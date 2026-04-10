@@ -1,6 +1,7 @@
 import { createAction, createReducer, createSlice, nanoid } from "@reduxjs/toolkit"
 import { create } from "@mui/material/styles/createTransitions"
 
+/*
 export const deleteTodolistAC = createAction<{ id: string }>("todolists/deleteTodolist")
 export const createTodolistAC = createAction("todolists/createTodolist", (title: string) => {
   return { payload: { title, id: nanoid() } }
@@ -9,17 +10,35 @@ export const changeTodolistTitleAC = createAction<{ id: string; title: string }>
 export const changeTodolistFilterAC = createAction<{ id: string; filter: FilterValues }>(
   "todolists/changeTodolistFilter",
 )
+*/
 
 const initialState: Todolist[] = []
-
 
 export const todolistsSlice = createSlice({
   name: "todolists",
   initialState: [] as Todolist[],
-  reducers: create =>({}),
-
+  reducers: (create) => ({
+    deleteTodolistAC: create.reducer<{ id: string }>((state, action) => {
+      const index = state.findIndex((todolist) => todolist.id === action.payload.id)
+      if (index !== -1) {
+        state.splice(index, 1)
+      }
+    }),
+    changeTodolistTitleAC: create.reducer<{ id: string; title: string }>((state, action) => {
+      const index = state.findIndex((todolist) => todolist.id === action.payload.id)
+      if (index !== -1) {
+        state[index].title = action.payload.title
+      }
+    }),
+    changeTodolistFilterAC: create.reducer<{ id: string; filter: FilterValues }>((state, action) => {
+      const index = state.findIndex((todolist) => todolist.id === action.payload.id)
+      if (index !== -1) {
+        state[index].filter = action.payload.filter
+      }
+    }),
+  }),
 })
-export const {}=todolistsSlice.actions
+export const {deleteTodolistAC,changeTodolistTitleAC,changeTodolistFilterAC} = todolistsSlice.actions
 export const todolistReducer = todolistsSlice.reducer
 
 /*export const todolistsSlice = createReducer(initialState, (builder) => {
