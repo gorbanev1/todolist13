@@ -1,19 +1,20 @@
-import { createAction, createReducer, createSlice } from "@reduxjs/toolkit"
-export type ThemeMode = 'light' | 'dark'
+import { createSlice } from "@reduxjs/toolkit"
+
+export type ThemeMode = "light" | "dark"
 
 export const appSlice = createSlice({
   name: "app",
   initialState: {
-    themeMode: "light" as ThemeMode
+    themeMode: "light" as ThemeMode,
   },
-  reducers: create => ({
-    changeThemeModeAC: create.reducer<{themeMode: ThemeMode}>((state, action )=>{
-      state.themeMode=action.payload.themeMode
-    })
-  })
+  selectors:{selectThemeMode: state=> state.themeMode},
+  reducers: (create) => ({
+    changeThemeModeAC: create.reducer<{ themeMode: ThemeMode }>((state, action) => {
+      state.themeMode = action.payload.themeMode
+    }),
+  }),
 })
 
+export const { changeThemeModeAC } = appSlice.actions
 
-export const { changeThemeModeAC } = appSlice.actions;
-
-export const appReducer = appSlice.reducer;
+export const appReducer = appSlice.reducer

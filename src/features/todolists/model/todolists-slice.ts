@@ -1,9 +1,13 @@
 import { createSlice, nanoid } from "@reduxjs/toolkit"
+import { Todolist } from "@/features/todolists/api/todolistsApi.types.ts"
 
+export type DomainTodolist=Todolist & {
+  filter: FilterValues
+}
 
 export const todolistsSlice = createSlice({
   name: "todolists",
-  initialState: [] as Todolist[],
+  initialState: [] as DomainTodolist[],
   reducers: (create) => ({
     deleteTodolistAC: create.reducer<{ id: string }>((state, action) => {
       const index = state.findIndex((todolist) => todolist.id === action.payload.id)
@@ -26,17 +30,17 @@ export const todolistsSlice = createSlice({
     createTodolistAC: create.preparedReducer(
       (title: string) => ({ payload: { title, id: nanoid() } }),
       (state, action) => {
-        state.push({ ...action.payload, filter: "all" })
+        state.push({ ...action.payload, filter: "all",addedDate: '', order: 0 })
       },
     ),
+    setTodolistAC: create.reducer<{ todolists: Todolist[] }>((state, action)=>{
+      return action.payload.todolists.map((tl) => {
+        return {...tl, filter:'all'}
+      })
+    }),
   }),
 })
-export const { deleteTodolistAC, changeTodolistTitleAC, changeTodolistFilterAC, createTodolistAC } = todolistsSlice.actions
+export const {setTodolistAC, deleteTodolistAC, changeTodolistTitleAC, changeTodolistFilterAC, createTodolistAC } = todolistsSlice.actions
 
-export type Todolist = {
-  id: string
-  title: string
-  filter: FilterValues
-}
 
 export type FilterValues = "all" | "active" | "completed"
