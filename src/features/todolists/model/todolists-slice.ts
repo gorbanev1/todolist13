@@ -1,6 +1,7 @@
-import { createAsyncThunk, createSlice,  } from "@reduxjs/toolkit"
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { Todolist } from "@/features/todolists/api/todolistsApi.types.ts"
 import { todolistsApi } from "@/features/todolists/api/todolistsApi.ts"
+import { RootState } from "@/app/store.ts"
 
 export type DomainTodolist = Todolist & {
   filter: FilterValues
@@ -42,10 +43,10 @@ export const todolistsSlice = createSlice({
         return state.map((tl) => (tl.id === action.payload.id ? { ...tl, title: action.payload.title } : tl))
       })
       .addCase(changeTodolistTitleTC.rejected, (state, action) => {})
-      .addCase(deleteTodolistTC.fulfilled, (state, action)=>{
-        return state.filter(tl=>tl.id!==action.payload.id)
+      .addCase(deleteTodolistTC.fulfilled, (state, action) => {
+        return state.filter((tl) => tl.id !== action.payload.id)
       })
-      .addCase(createTodolistTC.fulfilled, (state, action)=>{
+      .addCase(createTodolistTC.fulfilled, (state, action) => {
         state.unshift({ ...action.payload, filter: "all" })
       })
   },
@@ -65,39 +66,36 @@ export const changeTodolistTitleTC = createAsyncThunk(
     try {
       await todolistsApi.changeTodolistTitle(payload)
       return payload
-    }
-    catch (error){
+    } catch (error) {
       return thunkAPI.rejectWithValue(error)
     }
-
   },
 )
 export const deleteTodolistTC = createAsyncThunk(
   `${todolistsSlice.name}/delete-todolist`,
-  async (payload:{id:string},thunkAPI)=>{
-    try{
+  async (payload: { id: string }, thunkAPI) => {
+    try {
       await todolistsApi.deleteTodolist(payload.id)
       return payload
-    }
-    catch (error){
+    } catch (error) {
       return thunkAPI.rejectWithValue(error)
     }
-  }
+  },
 )
 export const createTodolistTC = createAsyncThunk(
   `${todolistsSlice.name}/create-todolist`,
-  async (payload:{title:string}, thunkAPI)=>{
-    try{
-      const res = await todolistsApi.createTodolist(payload.title )
-      return  res.data.data.item
+  async (payload: { title: string }, thunkAPI) => {
+    try {
+      const res = await todolistsApi.createTodolist(payload.title)
+      return res.data.data.item
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error)
     }
-    catch(error)  {
-        return thunkAPI.rejectWithValue(error)
-      }
-  }
+  },
 )
 
-export const { setTodolistAC, deleteTodolistAC,  changeTodolistFilterAC } =
-  todolistsSlice.actions
+export const { setTodolistAC, deleteTodolistAC, changeTodolistFilterAC } = todolistsSlice.actions
 
 export type FilterValues = "all" | "active" | "completed"
+
+export const selectTodolists = (state: RootState): DomainTodolist[] => state.todolists
